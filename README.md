@@ -54,12 +54,12 @@ encounter any problems, please log an
 -  version 1.0.2 - 2021/05/17
     - Adjusted README.md
     - Made relative path for config.ini
-    
+
 
 -  version 1.0.1 - 2021/04/08
     - Fixed logging file name bug
     - No longer needs to generate sensor flatfile
-    
+
 
 -  version 1.0.0 - 2021/04/08
     - Initial release
