@@ -7,8 +7,9 @@ import urllib.parse
 from datetime import datetime
 
 import configparser
-import requests
 import pandas as pd
+import pytz
+import requests
 
 
 # Module information.
@@ -16,7 +17,7 @@ __author__ = 'Anthony Farina'
 __copyright__ = 'Copyright 2021, PRTG Sensor Deleter'
 __credits__ = ['Anthony Farina']
 __license__ = 'MIT'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __maintainer__ = 'Anthony Farina'
 __email__ = 'farinaanthony96@gmail.com'
 __status__ = 'Released'
@@ -29,6 +30,7 @@ SERVER_URL = CONFIG['PRTG Info']['server-url']
 USERNAME = urllib.parse.quote_plus(CONFIG['PRTG Info']['username'])
 PASSWORD = urllib.parse.quote_plus(CONFIG['PRTG Info']['password'])
 PASSHASH = urllib.parse.quote_plus(CONFIG['PRTG Info']['passhash'])
+TIMEZONE = CONFIG['Timezone Info']['timezone']
 
 
 # This function will go into the provided PRTG instance and delete sensors
@@ -36,7 +38,8 @@ PASSHASH = urllib.parse.quote_plus(CONFIG['PRTG Info']['passhash'])
 # which sensors were deleted and when in a log file.
 def prtg_sensor_deleter() -> None:
     # Make a logger that logs what's happening in a log file and the console.
-    now_log = datetime.now()
+    now_log = datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(
+        pytz.timezone(TIMEZONE))
     logging.basicConfig(filename='deletion_log-' + now_log.strftime(
         '%Y-%m-%d_%I-%M-%S-%p-%Z') + '.log', level=logging.INFO,
                         format='[%(asctime)s] [%(levelname)s] %(message)s',
@@ -61,12 +64,11 @@ def prtg_sensor_deleter() -> None:
     sensor_resp_csv_df = pd.read_csv(sensor_resp_csv_strio)
     sensor_resp_csv_df = remove_raw(sensor_resp_csv_df)
 
-    # Turn the CSV response dataframe into a CSV file.
-    sensor_csv_file = sensor_resp_csv_df.to_csv(sep=',', index=False,
-                                                encoding='utf-8')
-
-    # Parse the CSV file as a dictionary.
-    sensor_dict = csv.DictReader(sensor_csv_file)
+    # Turn the CSV response dataframe and interpret it as a dictionary.
+    sensor_csv_str = sensor_resp_csv_df.to_csv(sep=',', index=False,
+                                               encoding='utf-8')
+    sensor_csv_strio = io.StringIO(sensor_csv_str)
+    sensor_dict = csv.DictReader(sensor_csv_strio)
     logging.info('Response from PRTG has been formatted!')
 
     # Count the number of successful and unsuccessful deletions.
