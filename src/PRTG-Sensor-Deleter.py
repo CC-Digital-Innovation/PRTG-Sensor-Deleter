@@ -1,12 +1,13 @@
+import configparser
 import csv
 import io
 import logging
+import os
 import re
 import sys
 import urllib.parse
 from datetime import datetime
 
-import configparser
 import pandas as pd
 import pytz
 import requests
@@ -17,7 +18,7 @@ __author__ = 'Anthony Farina'
 __copyright__ = 'Copyright 2021, PRTG Sensor Deleter'
 __credits__ = ['Anthony Farina']
 __license__ = 'MIT'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __maintainer__ = 'Anthony Farina'
 __email__ = 'farinaanthony96@gmail.com'
 __status__ = 'Released'
@@ -25,7 +26,7 @@ __status__ = 'Released'
 
 # Global variables from the config file for easy referencing.
 CONFIG = configparser.ConfigParser()
-CONFIG.read('../config.ini')
+CONFIG.read(os.path.dirname(os.path.realpath(__file__)) + '/../config.ini')
 SERVER_URL = CONFIG['PRTG Info']['server-url']
 USERNAME = urllib.parse.quote_plus(CONFIG['PRTG Info']['username'])
 PASSWORD = urllib.parse.quote_plus(CONFIG['PRTG Info']['password'])
