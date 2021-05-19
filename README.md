@@ -51,6 +51,10 @@ encounter any problems, please log an
 5. Submit a pull request ツ
 
 ## History
+-  version 1.0.3 - 2021/05/19
+    - Made logs go into their own directory
+    
+
 -  version 1.0.2 - 2021/05/17
     - Adjusted README.md
     - Made relative path for config.ini

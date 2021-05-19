@@ -18,15 +18,18 @@ __author__ = 'Anthony Farina'
 __copyright__ = 'Copyright 2021, PRTG Sensor Deleter'
 __credits__ = ['Anthony Farina']
 __license__ = 'MIT'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __maintainer__ = 'Anthony Farina'
 __email__ = 'farinaanthony96@gmail.com'
 __status__ = 'Released'
 
 
+# General global variables.
+SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
+
 # Global variables from the config file for easy referencing.
 CONFIG = configparser.ConfigParser()
-CONFIG.read(os.path.dirname(os.path.realpath(__file__)) + '/../config.ini')
+CONFIG.read(SCRIPT_PATH + '/../config.ini')
 SERVER_URL = CONFIG['PRTG Info']['server-url']
 USERNAME = urllib.parse.quote_plus(CONFIG['PRTG Info']['username'])
 PASSWORD = urllib.parse.quote_plus(CONFIG['PRTG Info']['password'])
@@ -41,8 +44,9 @@ def prtg_sensor_deleter() -> None:
     # Make a logger that logs what's happening in a log file and the console.
     now_log = datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(
         pytz.timezone(TIMEZONE))
-    logging.basicConfig(filename='deletion_log-' + now_log.strftime(
-        '%Y-%m-%d_%I-%M-%S-%p-%Z') + '.log', level=logging.INFO,
+    logging.basicConfig(filename=SCRIPT_PATH + '/../logs/deletion_log-' +
+                        now_log.strftime('%Y-%m-%d_%I-%M-%S-%p-%Z') + '.log',
+                        level=logging.INFO,
                         format='[%(asctime)s] [%(levelname)s] %(message)s',
                         datefmt='%m-%d-%Y %I:%M:%S %p %Z')
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
@@ -154,5 +158,9 @@ def add_auth(url: str) -> str:
 
 # The main method that runs the script. There are no input arguments.
 if __name__ == '__main__':
+    # Check to make sure the logs folder exists. If not, create it.
+    if not os.path.isdir(SCRIPT_PATH + '/../logs'):
+        os.mkdir(SCRIPT_PATH + '/../logs')
+
     # Run the script.
     prtg_sensor_deleter()
