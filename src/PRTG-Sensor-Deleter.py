@@ -18,7 +18,7 @@ __author__ = 'Anthony Farina'
 __copyright__ = 'Copyright 2021, PRTG Sensor Deleter'
 __credits__ = ['Anthony Farina']
 __license__ = 'MIT'
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 __maintainer__ = 'Anthony Farina'
 __email__ = 'farinaanthony96@gmail.com'
 __status__ = 'Released'
@@ -29,7 +29,8 @@ SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 # Global variables from the config file for easy referencing.
 CONFIG = configparser.ConfigParser()
-CONFIG.read(SCRIPT_PATH + '/../config.ini')
+CONFIG_PATH = '/../configs/PRTG-Sensor-Deleter-config.ini'
+CONFIG.read(SCRIPT_PATH + CONFIG_PATH)
 SERVER_URL = CONFIG['PRTG Info']['server-url']
 USERNAME = urllib.parse.quote_plus(CONFIG['PRTG Info']['username'])
 PASSWORD = urllib.parse.quote_plus(CONFIG['PRTG Info']['password'])
